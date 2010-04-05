@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 
 static void
-screenshot_upload ()
+upload_image (const char *filename)
 {
   CURL                 *handle;
   struct curl_httppost *post = NULL, *last = NULL;
@@ -18,7 +18,7 @@ screenshot_upload ()
   curl_formadd(&post, &last, CURLFORM_COPYNAME, "id",
                CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
   curl_formadd(&post, &last, CURLFORM_COPYNAME, "imagedata",
-               CURLFORM_FILE, "/tmp/.gyazo.png", CURLFORM_END);
+               CURLFORM_FILE, filename, CURLFORM_END);
   curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
 
   curl_easy_perform(handle);
@@ -148,7 +148,7 @@ select_area_filter (GdkXEvent *gdk_xevent,
 }
 
 static GdkPixbuf *
-screenshot_get_pixbuf (GdkRectangle *rectangle)
+get_screenshot_rectangle (GdkRectangle *rectangle)
 {
   GdkWindow *root;
   GdkPixbuf *screenshot;
@@ -168,19 +168,17 @@ screenshot_get_pixbuf (GdkRectangle *rectangle)
   return screenshot;
 }
 
-static gboolean
-screenshot_select_area (int *px,
-                        int *py,
-                        int *pwidth,
-                        int *pheight)
+static GdkRectangle *
+select_area ()
 {
   GdkWindow               *root;
   GdkCursor               *cursor;
   select_area_filter_data  data;
   GdkGCValues              values;
   GdkColor                 color;
+  GdkRectangle            *rectangle;
 
-  root = gdk_get_default_root_window ();
+  root   = gdk_get_default_root_window ();
   cursor = gdk_cursor_new (GDK_CROSSHAIR);
 
   if (gdk_pointer_grab (root, FALSE,
@@ -244,31 +242,68 @@ screenshot_select_area (int *px,
   gdk_pointer_ungrab (GDK_CURRENT_TIME);
   gdk_cursor_unref (cursor);
 
-  *px = data.rect.x;
-  *py = data.rect.y;
-  *pwidth  = data.rect.width + 1;
-  *pheight = data.rect.height + 1;
+  rectangle = g_new0 (GdkRectangle, 1);
+  rectangle->x = data.rect.x;
+  rectangle->y = data.rect.y;
+  rectangle->width  = data.rect.width + 1;
+  rectangle->height = data.rect.height + 1;
 
-  return TRUE;
+  return rectangle;
 }
+
+/* -- Screenshot -- */
+
+
+
+/* -- Status icon -- */
+
+static void
+on_status_icon_activate ()
+{
+  GdkRectangle *rectangle;
+  GdkPixbuf    *screenshot;
+
+  rectangle  = select_area ();
+  screenshot = get_screenshot_rectangle (rectangle);
+
+  gdk_pixbuf_savev (screenshot, "/tmp/.gyazo.png", "png", NULL, NULL, NULL);
+  g_free (rectangle);
+  
+  upload_image ("/tmp/.gyazo.png");
+}
+
+static void
+create_status_icon ()
+{
+  GtkStatusIcon *icon;
+
+  icon = gtk_status_icon_new_from_file ("gyazo.png");
+  g_signal_connect (G_OBJECT (icon), "activate", 
+                    G_CALLBACK (on_status_icon_activate), NULL);
+}
+
+/* -- Main -- */
 
 int
 main (int    argc,
       char** argv)
 {
-  char         *filename;
+  gtk_init (&argc, &argv);
+
+/*  create_status_icon ();
+
+  gtk_main ();
+*/
   GdkRectangle *rectangle;
   GdkPixbuf    *screenshot;
 
-  gtk_init (&argc, &argv);
+  rectangle  = select_area ();
+  screenshot = get_screenshot_rectangle (rectangle);
 
-  rectangle = g_new0 (GdkRectangle, 1);
-  screenshot_select_area (&rectangle->x, &rectangle->y, 
-                          &rectangle->width, &rectangle->height);
-
-  screenshot = screenshot_get_pixbuf (rectangle);
   gdk_pixbuf_savev (screenshot, "/tmp/.gyazo.png", "png", NULL, NULL, NULL);
-  screenshot_upload();
+  g_free (rectangle);
+  
+  upload_image ("/tmp/.gyazo.png");
 
   return 0;
 }
