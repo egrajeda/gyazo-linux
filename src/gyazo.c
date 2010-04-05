@@ -1,6 +1,29 @@
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <curl/curl.h>
+
+static void
+screenshot_upload ()
+{
+  CURL                 *handle;
+  struct curl_httppost *post = NULL, *last = NULL;
+
+  handle = curl_easy_init();
+
+  curl_easy_setopt(handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
+  curl_easy_setopt(handle, CURLOPT_PROXYPORT, 8080);
+  curl_easy_setopt(handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
+
+  curl_formadd(&post, &last, CURLFORM_COPYNAME, "id",
+               CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
+  curl_formadd(&post, &last, CURLFORM_COPYNAME, "imagedata",
+               CURLFORM_FILE, "/tmp/.gyazo.png", CURLFORM_END);
+  curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
+
+  curl_easy_perform(handle);
+  curl_easy_cleanup(handle);
+}
 
 static void
 select_area_button_press (XKeyEvent    *event,
@@ -124,7 +147,7 @@ select_area_filter (GdkXEvent *gdk_xevent,
   return GDK_FILTER_CONTINUE;
 }
 
-GdkPixbuf *
+static GdkPixbuf *
 screenshot_get_pixbuf (GdkRectangle *rectangle)
 {
   GdkWindow *root;
@@ -145,7 +168,7 @@ screenshot_get_pixbuf (GdkRectangle *rectangle)
   return screenshot;
 }
 
-gboolean
+static gboolean
 screenshot_select_area (int *px,
                         int *py,
                         int *pwidth,
@@ -233,33 +256,19 @@ int
 main (int    argc,
       char** argv)
 {
-    GdkRectangle *rectangle;
-    GdkPixbuf    *screenshot;
+  char         *filename;
+  GdkRectangle *rectangle;
+  GdkPixbuf    *screenshot;
 
-    /*
-    gtk_init (&argc, &argv);
+  gtk_init (&argc, &argv);
 
-    rectangle = g_new0 (GdkRectangle, 1);
-    screenshot_select_area (&rectangle->x, &rectangle->y, 
-                            &rectangle->width, &rectangle->height);
+  rectangle = g_new0 (GdkRectangle, 1);
+  screenshot_select_area (&rectangle->x, &rectangle->y, 
+                          &rectangle->width, &rectangle->height);
 
-    screenshot = screenshot_get_pixbuf (rectangle);
-    gdk_pixbuf_savev (screenshot, "/tmp/foo.png", "png", NULL, NULL, NULL);
-    */    
+  screenshot = screenshot_get_pixbuf (rectangle);
+  gdk_pixbuf_savev (screenshot, "/tmp/.gyazo.png", "png", NULL, NULL, NULL);
+  screenshot_upload();
 
-    CURL                 *handle;
-    struct curl_httppost *post = NULL, *last = NULL;
-    
-    handle = curl_easy_init();
-    curl_easy_setopt(handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
-    curl_easy_setopt(handle, CURLOPT_PROXYPORT, 8080);
-    curl_easy_setopt(handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
-    curl_formadd(&post, &last, CURLFORM_COPYNAME, "id",
-                 CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
-    curl_formadd(&post, &last, CURLFORM_COPYNAME, "imagedata",
-                 CURLFORM_FILE, "/tmp/foo.png", CURLFORM_END);
-    curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
-    curl_easy_perform(handle);
-
-    return 0;
+  return 0;
 }
