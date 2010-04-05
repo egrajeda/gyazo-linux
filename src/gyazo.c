@@ -302,21 +302,8 @@ main (int    argc,
       char** argv)
 {
   gtk_init (&argc, &argv);
-
-/*  create_status_icon ();
-
+  create_status_icon ();
   gtk_main ();
-*/
-  GdkRectangle *rectangle;
-  GdkPixbuf    *screenshot;
-
-  rectangle  = select_area ();
-  screenshot = get_screenshot_rectangle (rectangle);
-
-  gdk_pixbuf_savev (screenshot, "/tmp/.gyazo.png", "png", NULL, NULL, NULL);
-  g_free (rectangle);
-  
-  upload_image ("/tmp/.gyazo.png");
 
   return 0;
 }
