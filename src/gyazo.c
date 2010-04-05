@@ -222,8 +222,8 @@ screenshot_select_area (int *px,
 
   *px = data.rect.x;
   *py = data.rect.y;
-  *pwidth  = data.rect.width;
-  *pheight = data.rect.height;
+  *pwidth  = data.rect.width + 1;
+  *pheight = data.rect.height + 1;
 
   return TRUE;
 }
