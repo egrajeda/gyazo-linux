@@ -1,7 +1,19 @@
 #include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <curl/curl.h>
+
+static size_t
+on_image_uploaded (void   *buffer,
+                   size_t  size,
+                   size_t  nmemb,
+                   void   *userp)
+{
+  char  command[1024];
+  sprintf (command, "xdg-open %s", buffer);
+  system (command);
+}
 
 static void
 upload_image (const char *filename)
@@ -9,20 +21,21 @@ upload_image (const char *filename)
   CURL                 *handle;
   struct curl_httppost *post = NULL, *last = NULL;
 
-  handle = curl_easy_init();
+  handle = curl_easy_init ();
 
-  curl_easy_setopt(handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
-  curl_easy_setopt(handle, CURLOPT_PROXYPORT, 8080);
-  curl_easy_setopt(handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
+  curl_easy_setopt (handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
+  curl_easy_setopt (handle, CURLOPT_PROXYPORT, 8080);
+  curl_easy_setopt (handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
+  curl_easy_setopt (handle, CURLOPT_WRITEFUNCTION, on_image_uploaded);
 
-  curl_formadd(&post, &last, CURLFORM_COPYNAME, "id",
-               CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
-  curl_formadd(&post, &last, CURLFORM_COPYNAME, "imagedata",
-               CURLFORM_FILE, filename, CURLFORM_END);
-  curl_easy_setopt(handle, CURLOPT_HTTPPOST, post);
+  curl_formadd (&post, &last, CURLFORM_COPYNAME, "id",
+                CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
+  curl_formadd (&post, &last, CURLFORM_COPYNAME, "imagedata",
+                CURLFORM_FILE, filename, CURLFORM_END);
+  curl_easy_setopt (handle, CURLOPT_HTTPPOST, post);
 
-  curl_easy_perform(handle);
-  curl_easy_cleanup(handle);
+  curl_easy_perform (handle);
+  curl_easy_cleanup (handle);
 }
 
 static void
