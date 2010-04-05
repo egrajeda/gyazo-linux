@@ -10,7 +10,14 @@ on_image_uploaded (void   *buffer,
                    size_t  nmemb,
                    void   *userp)
 {
-  char  command[1024];
+  GtkClipboard *clipboard;
+  char          command[1024];
+
+  clipboard = gtk_clipboard_get (gdk_atom_intern ("CLIPBOARD", FALSE));
+  gtk_clipboard_set_text (clipboard, buffer, (gint) (size * nmemb));
+  clipboard = gtk_clipboard_get (gdk_atom_intern ("PRIMARY", FALSE));
+  gtk_clipboard_set_text (clipboard, buffer, (gint) (size * nmemb));
+
   sprintf (command, "xdg-open %s", buffer);
   system (command);
 }
