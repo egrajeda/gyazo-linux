@@ -19,6 +19,11 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+PKG_CHECK_MODULES(GYAZOLINUX, [
+    gtk+-2.0 >= 2.20
+    gdk-2.0 >= 2.20
+    libcurl >= 7.20
+])
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
