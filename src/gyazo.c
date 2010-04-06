@@ -5,6 +5,8 @@
 #include <gdk/gdkx.h>
 #include <curl/curl.h>
 
+#include "config.h"
+
 static size_t
 on_image_uploaded (void   *buffer,
                    size_t  size,
