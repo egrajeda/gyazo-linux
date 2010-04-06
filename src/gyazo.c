@@ -307,7 +307,7 @@ create_status_icon ()
   GtkStatusIcon *icon;
 
   /* TODO: agregar un menu para salirse o algo */
-  icon = gtk_status_icon_new_from_file ("/tmp/gyazo.png");
+  icon = gtk_status_icon_new_from_icon_name ("gyazo-linux");
   g_signal_connect (G_OBJECT (icon), "activate", 
                     G_CALLBACK (on_status_icon_activate), NULL);
 }
