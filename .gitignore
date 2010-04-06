@@ -1,4 +1,5 @@
 *~
+*.swp
 aclocal.m4
 autom4te.cache
 config.h
@@ -9,12 +10,9 @@ configure
 depcomp
 install-sh
 missing
-mkinstalldirs
-omf.make
 Makefile
 Makefile.in
-Makefile.in.in
-.deps
 stamp-h1
+.deps
 src/*.o
 src/gyazolinux
