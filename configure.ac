@@ -30,6 +30,5 @@ AC_CONFIG_FILES([
     src/Makefile 
     data/Makefile
     data/art/Makefile
-    data/art/48x48/Makefile
 ])
 AC_OUTPUT
