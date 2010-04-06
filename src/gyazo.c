@@ -271,6 +271,9 @@ select_area ()
   gdk_pointer_ungrab (GDK_CURRENT_TIME);
   gdk_cursor_unref (cursor);
 
+  if (data.rect.width == 0 && data.rect.height == 0)
+    return NULL;
+
   rectangle = g_new0 (GdkRectangle, 1);
   rectangle->x = data.rect.x;
   rectangle->y = data.rect.y;
@@ -293,6 +296,9 @@ on_status_icon_activate ()
   GdkPixbuf    *screenshot;
 
   rectangle  = select_area ();
+  if (rectangle == NULL)
+    return;
+
   screenshot = get_screenshot_rectangle (rectangle);
 
   gdk_pixbuf_savev (screenshot, "/tmp/.gyazo.png", "png", NULL, NULL, NULL);
