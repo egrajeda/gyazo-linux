@@ -50,12 +50,6 @@ upload_image (const char *filename)
 
   handle = curl_easy_init ();
 
-  /* TODO: sacar esto de los settings de gnome */
-  /*
-  curl_easy_setopt (handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
-  curl_easy_setopt (handle, CURLOPT_PROXYPORT, 8080);
-  */
-
   curl_easy_setopt (handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
   curl_easy_setopt (handle, CURLOPT_WRITEFUNCTION, on_image_uploaded);
 
