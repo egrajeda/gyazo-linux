@@ -1,3 +1,4 @@
+/* TODO: agregar una licencia */
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -30,11 +31,14 @@ upload_image (const char *filename)
 
   handle = curl_easy_init ();
 
+  /* TODO: sacar esto de los settings de gnome */
   curl_easy_setopt (handle, CURLOPT_PROXY, "http://proxy.udb.edu.sv");
   curl_easy_setopt (handle, CURLOPT_PROXYPORT, 8080);
+
   curl_easy_setopt (handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
   curl_easy_setopt (handle, CURLOPT_WRITEFUNCTION, on_image_uploaded);
 
+  /* TODO: seguir el mismo formato de ID que tiene gyazowin */
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "id",
                 CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "imagedata",
@@ -42,6 +46,9 @@ upload_image (const char *filename)
   curl_easy_setopt (handle, CURLOPT_HTTPPOST, post);
 
   curl_easy_perform (handle);
+
+  curl_formfree (post);
+  curl_formfree (last);
   curl_easy_cleanup (handle);
 }
 
@@ -297,6 +304,7 @@ create_status_icon ()
 {
   GtkStatusIcon *icon;
 
+  /* TODO: agregar un menu para salirse o algo */
   icon = gtk_status_icon_new_from_file ("gyazo.png");
   g_signal_connect (G_OBJECT (icon), "activate", 
                     G_CALLBACK (on_status_icon_activate), NULL);
