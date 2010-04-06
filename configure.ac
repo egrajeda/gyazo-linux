@@ -5,7 +5,7 @@ AC_PREREQ([2.50])
 AC_INIT([gyazo-linux], [1.0], [tatofoo@gmail.com])
 AC_CONFIG_SRCDIR([src/gyazo.c])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-AM_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CC
