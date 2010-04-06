@@ -45,9 +45,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_gyazolinux_OBJECTS = gyazo.$(OBJEXT)
+am_gyazolinux_OBJECTS = gyazolinux-gyazo.$(OBJEXT)
 gyazolinux_OBJECTS = $(am_gyazolinux_OBJECTS)
 gyazolinux_LDADD = $(LDADD)
+gyazolinux_LINK = $(CCLD) $(gyazolinux_CFLAGS) $(CFLAGS) \
+	$(gyazolinux_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -81,6 +83,8 @@ ECHO_T =
 EGREP = /bin/grep -E
 EXEEXT = 
 GREP = /bin/grep
+GYAZOLINUX_CFLAGS = -pthread -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng14  
+GYAZOLINUX_LIBS = -pthread -lgtk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lfreetype -lfontconfig -lgdk-x11-2.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lcurl  
 INSTALL = /bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -101,6 +105,7 @@ PACKAGE_TARNAME = gyazo-linux
 PACKAGE_URL = 
 PACKAGE_VERSION = 1.0
 PATH_SEPARATOR = :
+PKG_CONFIG = /usr/bin/pkg-config
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
@@ -147,7 +152,9 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-gyazolinux_SOURCES = gyazo.c
+gyazolinux_SOURCES = gyazo.c 
+gyazolinux_CFLAGS = $(GYAZOLINUX_CFLAGS)
+gyazolinux_LDFLAGS = $(GYAZOLINUX_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -221,7 +228,7 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 gyazolinux$(EXEEXT): $(gyazolinux_OBJECTS) $(gyazolinux_DEPENDENCIES) 
 	@rm -f gyazolinux$(EXEEXT)
-	$(LINK) $(gyazolinux_OBJECTS) $(gyazolinux_LDADD) $(LIBS)
+	$(gyazolinux_LINK) $(gyazolinux_OBJECTS) $(gyazolinux_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -229,7 +236,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/gyazo.Po
+include ./$(DEPDIR)/gyazolinux-gyazo.Po
 
 .c.o:
 	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -244,6 +251,20 @@ include ./$(DEPDIR)/gyazo.Po
 #	source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+gyazolinux-gyazo.o: gyazo.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gyazolinux_CFLAGS) $(CFLAGS) -MT gyazolinux-gyazo.o -MD -MP -MF $(DEPDIR)/gyazolinux-gyazo.Tpo -c -o gyazolinux-gyazo.o `test -f 'gyazo.c' || echo '$(srcdir)/'`gyazo.c
+	$(am__mv) $(DEPDIR)/gyazolinux-gyazo.Tpo $(DEPDIR)/gyazolinux-gyazo.Po
+#	source='gyazo.c' object='gyazolinux-gyazo.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gyazolinux_CFLAGS) $(CFLAGS) -c -o gyazolinux-gyazo.o `test -f 'gyazo.c' || echo '$(srcdir)/'`gyazo.c
+
+gyazolinux-gyazo.obj: gyazo.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gyazolinux_CFLAGS) $(CFLAGS) -MT gyazolinux-gyazo.obj -MD -MP -MF $(DEPDIR)/gyazolinux-gyazo.Tpo -c -o gyazolinux-gyazo.obj `if test -f 'gyazo.c'; then $(CYGPATH_W) 'gyazo.c'; else $(CYGPATH_W) '$(srcdir)/gyazo.c'; fi`
+	$(am__mv) $(DEPDIR)/gyazolinux-gyazo.Tpo $(DEPDIR)/gyazolinux-gyazo.Po
+#	source='gyazo.c' object='gyazolinux-gyazo.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gyazolinux_CFLAGS) $(CFLAGS) -c -o gyazolinux-gyazo.obj `if test -f 'gyazo.c'; then $(CYGPATH_W) 'gyazo.c'; else $(CYGPATH_W) '$(srcdir)/gyazo.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
