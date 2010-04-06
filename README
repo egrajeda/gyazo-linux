@@ -1,1 +1,14 @@
-Will fill this later...
+README
+======
+This is the unofficial (at least for now) version for Linux of the Gyazo 
+application. Gyazo is an open-source image hosting service (http://gyazo.com).
+
+This application lets you select an area of the screen and then it 
+automatically uploads it to Gyazo, opens it in a web browser and copy the URL
+to the clipboard.
+
+Credits
+-------
+I used a lot of code from gnome-screenshot, so thanks a lot to the people that 
+contributed to it, namely Jonathan Blandfordh and Cosimo Cecchi according to 
+the source code header.
