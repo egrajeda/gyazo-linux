@@ -1,3 +1,3 @@
-bin_PROGRAMS = gyazo-linux
+bin_PROGRAMS = gyazolinux
 
 gyazolinux_SOURCES = gyazo.c
