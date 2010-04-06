@@ -25,5 +25,11 @@ PKG_CHECK_MODULES(GYAZOLINUX, [
     libcurl >= 7.20
 ])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([
+    Makefile 
+    src/Makefile 
+    data/Makefile
+    data/art/Makefile
+    data/art/48/Makefile
+])
 AC_OUTPUT
