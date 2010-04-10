@@ -61,7 +61,6 @@ upload_image (const char *filename)
   curl_easy_setopt (handle, CURLOPT_URL, "http://gyazo.com/upload.cgi");
   curl_easy_setopt (handle, CURLOPT_WRITEFUNCTION, on_image_uploaded);
 
-  /* TODO: seguir el mismo formato de ID que tiene gyazowin */
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "id",
                 CURLFORM_COPYCONTENTS, timebuf, CURLFORM_END);
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "imagedata",
