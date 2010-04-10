@@ -18,6 +18,7 @@ along with Gyazolinux.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <curl/curl.h>
@@ -45,8 +46,15 @@ on_image_uploaded (void   *buffer,
 static void
 upload_image (const char *filename)
 {
+  time_t                now;
+  struct tm            *timeinfo;
+  char                  timebuf[64];
   CURL                 *handle;
   struct curl_httppost *post = NULL, *last = NULL;
+
+  time (&now);
+  timeinfo  = localtime (&now);
+  strftime (timebuf, 64, "%Y%m%d%H%M%S", timeinfo);
 
   handle = curl_easy_init ();
 
@@ -55,7 +63,7 @@ upload_image (const char *filename)
 
   /* TODO: seguir el mismo formato de ID que tiene gyazowin */
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "id",
-                CURLFORM_COPYCONTENTS, "123", CURLFORM_END);
+                CURLFORM_COPYCONTENTS, timebuf, CURLFORM_END);
   curl_formadd (&post, &last, CURLFORM_COPYNAME, "imagedata",
                 CURLFORM_FILE, filename, CURLFORM_END);
   curl_easy_setopt (handle, CURLOPT_HTTPPOST, post);
