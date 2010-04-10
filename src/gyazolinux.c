@@ -348,7 +348,16 @@ create_status_icon ()
 
   menu = gtk_menu_new ();
 
+  item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES, NULL);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
   item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ABOUT, NULL);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+  item = gtk_separator_menu_item_new ();
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+  item = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
   gtk_widget_show_all (menu);
