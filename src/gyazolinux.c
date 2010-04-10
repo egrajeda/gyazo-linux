@@ -63,7 +63,6 @@ upload_image (const char *filename)
   curl_easy_perform (handle);
 
   curl_formfree (post);
-  curl_formfree (last);
   curl_easy_cleanup (handle);
 }
 
