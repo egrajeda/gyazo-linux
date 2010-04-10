@@ -341,6 +341,13 @@ on_status_icon_popup_menu (GtkStatusIcon *status_icon,
 }
 
 static void
+on_menu_quit_activate (GtkMenuItem *item,
+                       gpointer     user_data)
+{
+    gtk_main_quit ();
+}
+
+static void
 create_status_icon ()
 {
   GtkWidget *menu;
@@ -358,6 +365,8 @@ create_status_icon ()
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
   item = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
+  g_signal_connect (G_OBJECT (item), "activate",
+                    G_CALLBACK (on_menu_quit_activate), NULL);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
   gtk_widget_show_all (menu);
